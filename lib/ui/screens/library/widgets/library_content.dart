@@ -11,30 +11,43 @@ class LibraryContent extends StatelessWidget {
   Widget build(BuildContext context) {
     // 1- Read the globbal song repository
     LibraryViewModel mv = context.watch<LibraryViewModel>();
+    if (mv.isLoading == true) {
+      return CircularProgressIndicator();
+    }
+    if (mv.isLoading == false) {
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 16),
+            Text("Library", style: AppTextStyles.heading),
+            SizedBox(height: 50),
 
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 16),
-          Text("Library", style: AppTextStyles.heading),
-          SizedBox(height: 50),
-      
-          Expanded(
-            child: ListView.builder(
-              itemCount: mv.songs.length,
-              itemBuilder: (context, index) => SongTile(
-                song: mv.songs[index],
-                isPlaying: mv.isSongPlaying(mv.songs[index]) ,
-                onTap: () {
-                  mv.start(mv.songs[index]);
-                },
+            Expanded(
+              child: ListView.builder(
+                itemCount: mv.songs.length,
+                itemBuilder: (context, index) => SongTile(
+                  song: mv.songs[index],
+                  isPlaying: mv.isSongPlaying(mv.songs[index]),
+                  onTap: () {
+                    mv.start(mv.songs[index]);
+                  },
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
+    if (mv.isError == true) {
+      return Center(
+        child: Text(
+          "Error to fetch Song.",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      );
+    }
+    return Text("");
   }
 }
